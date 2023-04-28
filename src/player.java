@@ -17,8 +17,8 @@ public class player{
      */
     player(){
         amountOfMonstersKilled = 0;
-        health =1;
-        damage = 8;
+        health = 3;
+        damage = 1;
 
     }
     /**

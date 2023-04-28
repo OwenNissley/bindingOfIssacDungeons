@@ -32,14 +32,19 @@ public abstract class room {
     public void printRoom(){
         tile door = new doorTile();
         for(int i=0; i<tiles.length; i++){
+            if(i == 0){
+                System.out.println("-----");
+            }
+            System.out.print("|");
             for(int j=0; j<tiles[0].length; j++){
                 System.out.print(tiles[i][j].getDisplaySymbol());
             }
+            System.out.print("|");
                 if(!(i == tiles.length-1)){
                 System.out.println();
             }else {
                     System.out.println();
-                    System.out.println("------");
+                    System.out.println("-----");
                 }
         }
     }

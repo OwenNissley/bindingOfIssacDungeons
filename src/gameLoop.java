@@ -2,11 +2,16 @@ import java.util.Scanner;
 
 public class gameLoop {
     public static void main(String[] args) throws Exception {
-        map gameMap = new map("easy", 5);
+        Scanner input = new Scanner(System.in);
+        System.out.println("Enter Username");
+        String userName = input.nextLine();
+        System.out.println("Enter size of game, (How many rooms you want to play throughe) you want to play?");
+        int size = getValidInt();
+        map gameMap = new map("easy", size);
         room currentRoom = null;
         boolean completion = true;
         boolean firstBreak = false;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i <size; i++) {
             currentRoom = gameMap.getNextRoom();
             while (!(currentRoom.isNeedToMoveRoom())) {
                 currentRoom.printRoom();
@@ -20,6 +25,7 @@ public class gameLoop {
                     }
                 }catch (Exception e){
                     System.out.print(e.getMessage() + " Try again:");
+                    System.out.println();
                 }
             }
             if(firstBreak){
@@ -27,37 +33,36 @@ public class gameLoop {
             }
         }
         if(completion){
-            System.out.println("You have won with a score of: " + scoreCalculator(currentRoom,5));
+            System.out.println("You have won with a score of: " + scoreCalculator(currentRoom,size) + " Thats garb, get higher");
         }else {
-            System.out.println("Wow Your garb, you died!! HAHAHAHAH");
+            System.out.println("Wow Your garb, you died!! MWAHAHAHAHAH\n" +
+                    "DEAR DIARY,\n" +
+                    "TODAY I DIED.I WAS KILLED BY THIS THING →, \n" +
+                    "too tired to code symbol, I LEAVE ALL THAT I OWN TO MY CAT GUPPY, \n" +
+                    "GOODBYE CRUEL WORLD\n +" +
+                    "XOXO " + userName);
+
         }
     }
 
-    public static int scoreCalculator(room Room, int size){
-        int score = 0;
+    public static double scoreCalculator(room Room, int size){
+        double score = 0;
         int pHealth = Room.getPlayerHealth();
         int monsterCount = Room.getAmountOfMonstersPlayerKilled();
-        switch (monsterCount) {
-            case 1 -> score += 100;
-            case 2 -> score += 200;
-            case 3 -> score += 300;
-            case 4 -> score += 400;
-            case 5 -> score += 500;
-        }
-        switch (pHealth) {
-            case 1 -> score += 100;
-            case 2 -> score += 200;
-            case 3 -> score += 300;
-            case 4 -> score += 400;
-            case 5 -> score += 500;
-            case 6 -> score += 600;
-            case 7 -> score += 700;
-            case 8 -> score += 800;
-            case 9 -> score += 900;
-            case 10 -> score += 1000;
-        }
+        score = score + (((pHealth + monsterCount)*100)/size);
         return score;
-            
         }
+
+    public static int getValidInt(){
+        Scanner console = new Scanner(System.in);
+        while (!console.hasNextInt()) {
+            System.out.println("Not a valid input, try again.");
+            console.nextLine();
+        }
+        int location = console.nextInt();
+        return location;
+
     }
+
+}
 

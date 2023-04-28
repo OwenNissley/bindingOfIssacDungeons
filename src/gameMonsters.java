@@ -14,7 +14,7 @@ public class gameMonsters {
         monster huant = new monster("B","Huant", 2);
         gameMonsters.add(huant);
         this.addToSet(huant);
-        monster delerium = new monster("O","Delerium", 22);
+        monster delerium = new monster("O","Delerium", 20);
         gameMonsters.add(delerium);
         this.addToSet(delerium);
         monster pin = new monster("3","Pin", 1);
