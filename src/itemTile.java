@@ -1,4 +1,5 @@
 public class itemTile extends tile{
+
     item item;
     /**
      * Constructor to supply symbol
@@ -6,8 +7,10 @@ public class itemTile extends tile{
     itemTile(item item){
         super(item.getSymbol());
         this.item = item;
+        super.setDisplaySymbol("?");
     }
 
+    @Override
     public item getItem() {
         return item;
     }

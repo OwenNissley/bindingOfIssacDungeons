@@ -1,49 +1,39 @@
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
 public abstract class room {
     private tile [][]  tiles;
-    private player player;
+    private playerTile playerTile;
+    private boolean needToMoveRoom;
 
-    private ArrayList<Integer> playerPosition;
+    private boolean gameOver;
+
+
+
+
 
     room(int size, int monsterCount, int itemCount){
+        needToMoveRoom = false;
+        gameOver = false;
         tiles = new tile [size][size];
         for(int i=0; i<tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
                 tiles[i][j] = new emptyTile();
             }
         }
-        for(int i=0; i<itemCount; i++){
-            Random r = new Random();
-            gameItems items = new gameItems();
-            int randomnizer = r.nextInt(size-1);
-            while(randomnizer == 0){
-                 randomnizer = r.nextInt(size-1);
-            }
-            int row = i+randomnizer;
-            tiles[row][r.nextInt(size)] = new itemTile(items.getItem());
-        }
-        player = new player();
-        playerPosition = new ArrayList<>();
-        playerPosition.add(0,0);
-        playerPosition.add(1,0);
-        tiles[playerPosition.get(0)][playerPosition.get(1)] = new playerTile("P");
+        generateRoomItems(itemCount,size);
+        generateRoomMonsters(monsterCount,size);
+        playerTile = new playerTile("P");
+        tiles[playerTile.getPosR()][playerTile.getPosC()] = playerTile;
+        tiles[tiles.length-1][tiles[0].length-1] = new doorTile();
     }
 
-    public tile[][] getTiles() {
-        return tiles;
-    }
 
     public void printRoom(){
+        tile door = new doorTile();
         for(int i=0; i<tiles.length; i++){
             for(int j=0; j<tiles[0].length; j++){
-                if((tiles[i][j].isEqualToPlayer())){
-                    System.out.print(player.toPrint());
-                }else {
-                    System.out.print(tiles[i][j].getSymbol());
-                }
+                System.out.print(tiles[i][j].getDisplaySymbol());
             }
                 if(!(i == tiles.length-1)){
                 System.out.println();
@@ -53,68 +43,126 @@ public abstract class room {
                 }
         }
     }
-/*
-    public ArrayList<Integer> getPlayerPosition(){
-        ArrayList<Integer> indexes = new ArrayList<>();
-        for(int i=0; i<tiles.length; i++){
-            for(int j=0; j<tiles[0].length; j++){
-                if(tiles[i][j].getSymbol().equals(player.getSymbol())){
-                    indexes.add(i);
-                    indexes.add(j);
-                }
-            }
-        }
-        return indexes;
-    }
-
- */
 
     /**
      * Make tile empty
      */
-    public void updateTile(tile Tile){
-        Tile.tileReset();
-    }
+
     /**
      * Takes postion of player and updates accordingly
      */
     public void movePlayer(String input) throws Exception {
-        tiles[playerPosition.get(0)][playerPosition.get(1)] = new emptyTile();
-        if(input.equals("u")){
-            if(playerPosition.get(0) == 0){
-                tiles[playerPosition.get(0)][playerPosition.get(1)] = new playerTile("P");
+        boolean leftMonsterFight = false;
+        if(input.equals("w")){
+            if(playerTile.getPosR() == 0){
                 throw new Exception("Cant move");
             }else {
-                playerPosition.set(0,(playerPosition.get(0)-1));
+                clearPLayerFromCurrentPosition();
+                tile checkTile = tiles[playerTile.getPosR()-1][playerTile.getPosC()];
+                leftMonsterFight = runMoveInteractionsWithDecsionReturn(checkTile);
+                if(!(leftMonsterFight)){
+                    playerTile.updatePosR(playerTile.getPosR()-1);
+                }else {
+                    try {
+                        tiles[playerTile.getPosR()-1][playerTile.getPosC()].setDisplaySymbol(tiles[playerTile.getPosR()-1][playerTile.getPosC()].getMonster().getSymbol());
+                    }catch (Exception ignored){}
+                }
             }
-        } else if (input.equals("d")) {
-            if(playerPosition.get(0) == tiles.length-1){
-                tiles[playerPosition.get(0)][playerPosition.get(1)] = new playerTile("P");
+        } else if (input.equals("s")) {
+            if(playerTile.getPosR() == tiles.length-1){
                 throw new Exception("Cant move");
             }else {
-                playerPosition.set(0,(playerPosition.get(0)+1));
+                clearPLayerFromCurrentPosition();
+                tile checkTile = tiles[playerTile.getPosR()+1][playerTile.getPosC()];
+                leftMonsterFight = runMoveInteractionsWithDecsionReturn(checkTile);
+                if(!(leftMonsterFight)){
+                    playerTile.updatePosR(playerTile.getPosR()+1);
+                }else {
+                    try {
+                        tiles[playerTile.getPosR()+1][playerTile.getPosC()].setDisplaySymbol(tiles[playerTile.getPosR()+1][playerTile.getPosC()].getMonster().getSymbol());
+                    }catch (Exception ignored){}
+                }
             }
-        }else if (input.equals("l")) {
-            if(playerPosition.get(1) == 0){
-                tiles[playerPosition.get(0)][playerPosition.get(1)] = new playerTile("P");
+        }else if (input.equals("a")) {
+            if(playerTile.getPosC() == 0){
                 throw new Exception("Cant move");
             }else {
-                playerPosition.set(1,(playerPosition.get(1)-1));
+                clearPLayerFromCurrentPosition();
+                tile checkTile = tiles[playerTile.getPosR()][playerTile.getPosC()-1];
+                leftMonsterFight = runMoveInteractionsWithDecsionReturn(checkTile);
+                if(!(leftMonsterFight)) {
+                    playerTile.updatePosC(playerTile.getPosC() - 1);
+                }else {
+                    try {
+                        tiles[playerTile.getPosR()][playerTile.getPosC()-1].setDisplaySymbol(tiles[playerTile.getPosR()][playerTile.getPosC()-1].getMonster().getSymbol());
+                    }catch (Exception ignored){}
+                }
             }
-        }else if (input.equals("r")) {
-            if(playerPosition.get(1) == tiles[0].length-1){
-                tiles[playerPosition.get(0)][playerPosition.get(1)] = new playerTile("P");
+        }else if (input.equals("d")) {
+            if(playerTile.getPosC() == tiles[0].length-1){
                 throw new Exception("Cant move");
             }else {
-                playerPosition.set(1,(playerPosition.get(1)+1));
+                clearPLayerFromCurrentPosition();
+                tile checkTile = tiles[playerTile.getPosR()][playerTile.getPosC()+1];
+                leftMonsterFight = runMoveInteractionsWithDecsionReturn(checkTile);
+                if(!(leftMonsterFight)) {
+                    playerTile.updatePosC(playerTile.getPosC() + 1);
+                }else {
+                    try {
+                        tiles[playerTile.getPosR()][playerTile.getPosC()+1].setDisplaySymbol(tiles[playerTile.getPosR()][playerTile.getPosC()+1].getMonster().getSymbol());
+                    }catch (Exception ignored){}
+                }
             }
         }
-        tiles[playerPosition.get(0)][playerPosition.get(1)] = new playerTile("P");
+                updatePLayer();
     }
 
-    public      (   ){
-        if(move.eauls(dksjfs)){
-
+    public boolean runMoveInteractionsWithDecsionReturn(tile checkTile){
+        boolean leftRoom = false;
+        if(this.isThereAInteraction(checkTile)){
+            if (isDoor(checkTile)){
+                needToMoveRoom = true;
+            }else if(isItem(checkTile)){
+                item itemToUse = checkTile.getItem();
+                playerTile.getPlayer().useItem(itemToUse);
+                if(playerTile.getPlayer().getHealth()<=0){
+                    gameOver = true;
+                }
+            } else if (isMonster(checkTile)) {
+                leftRoom = playerTile.getPlayer().monsterInteraction(checkTile.getMonster());
+                if(playerTile.getPlayer().getHealth()<=0){
+                    gameOver = true;
+                }
+            }
+        }
+        return leftRoom;
+    }
+   public boolean isThereAInteraction(tile Tile){
+        if((Tile.isTileEqualToMonster()) || (Tile.isTileEqualToItem()) || (Tile.isTileEqualToDoor())){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    public boolean isItem(tile Tile){
+        if(Tile.isTileEqualToItem()){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    public boolean isMonster(tile Tile){
+        if(Tile.isTileEqualToMonster()){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    public boolean isDoor(tile Tile){
+        if(Tile.isTileEqualToDoor()){
+            return true;
+        }else {
+            return false;
         }
     }
 
@@ -129,7 +177,7 @@ public abstract class room {
         System.out.println("Next Move:");
         String move = "";
         move = input.nextLine();
-        while(!((move.equals("u") || (move.equals("d")) || (move.equals("r")) || (move.equals("l"))))){
+        while(!((move.equals("w") || (move.equals("s")) || (move.equals("a")) || (move.equals("d"))))){
             System.out.println("Next Move:");
             move = input.nextLine();
         }
@@ -138,7 +186,75 @@ public abstract class room {
     /**
      * Puts player to next room if walked through door
      */
-    public void toNewRoom(){
 
+    public void updatePLayer(){
+        tiles[playerTile.getPosR()][playerTile.getPosC()] = playerTile;
     }
+    public void clearPLayerFromCurrentPosition(){
+        tiles[playerTile.getPosR()][playerTile.getPosC()] = new emptyTile();
+    }
+
+    public void generateRoomItems(int itemCount, int size){
+        for(int i=0; i<itemCount; i++){
+            Random r = new Random();
+            gameItems items = new gameItems();
+            int randomnizer = r.nextInt(size-1);
+            while(randomnizer == 0){
+                randomnizer = r.nextInt(size-1);
+            }
+            int row = i+randomnizer;
+            int col = r.nextInt(size);
+            itemTile itemTileToAdd = new itemTile(items.getItem());
+            while(!(tiles[row][col].isTileEqualEmpty())){
+                 r = new Random();
+                 randomnizer = r.nextInt(size-1);
+                while(randomnizer == 0){
+                    randomnizer = r.nextInt(size-1);
+                }
+                 row = i+randomnizer;
+                 col = r.nextInt(size);
+            }
+            tiles[row][col] =itemTileToAdd;
+        }
+    }
+    public void generateRoomMonsters(int monsterCount, int size){
+        for(int i=0; i<monsterCount; i++){
+            Random r = new Random();
+            gameMonsters monsters = new gameMonsters();
+            int randomnizer = r.nextInt(size-1);
+            while(randomnizer == 0){
+                randomnizer = r.nextInt(size-1);
+            }
+            int row = i+randomnizer;
+            enemyTile monsterTileToAdd = new enemyTile(monsters.getMonster());
+            int col = r.nextInt(size);
+            while(!(tiles[row][col].isTileEqualEmpty())){
+                r = new Random();
+                randomnizer = r.nextInt(size-1);
+                while(randomnizer == 0){
+                    randomnizer = r.nextInt(size-1);
+                }
+                row = i+randomnizer;
+                col = r.nextInt(size);
+            }
+            tiles[row][col] = monsterTileToAdd;
+        }
+    }
+
+    public boolean isNeedToMoveRoom() {
+        return needToMoveRoom;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public int getAmountOfMonstersPlayerKilled(){
+        return playerTile.getPlayer().getAmountOfMonstersKilled();
+    }
+    public int getPlayerHealth(){
+        return playerTile.getPlayer().getHealth();
+    }
+
+
 }

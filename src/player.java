@@ -5,35 +5,22 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class player{
+
     private int health;
     private int damage;
 
-    private ArrayList<item> inventory;
+    private int amountOfMonstersKilled;
+
 
     /**
      * Create items and add to inventory and set health and damage
      */
     player(){
-        health =3;
-        damage = 0;
-        inventory = new ArrayList<>();
+        amountOfMonstersKilled = 0;
+        health =1;
+        damage = 8;
+
     }
-
-    /**
-     * Add Item to item inventory
-     * @param Item
-     */
-    public void addItem(item Item){
-        inventory.add(Item);
-    }
-
-
-
-    /**
-     * provides input for room to use
-     *
-     */
-
     /**
      * Updates players stats accordingly
      */
@@ -44,12 +31,35 @@ public class player{
         }else {
             damage = damage + item.getStrength();
         }
-        System.out.printf("%s\n%s",item.getName(),item.getEffect());
+        System.out.printf("%s,%s,\n%s",item.getSymbol(),item.getName(),item.getEffect());
     }
 
-    public boolean attackMonster(monster monster){
-        System.out.printf("You have entered combat with %s\n Be Prepared!",monster.getName());
-        return damage > monster.getAttack();
+    public boolean monsterInteraction(monster monster){
+        Scanner input = new Scanner(System.in);
+        System.out.printf("You have entered combat with %s\n Be Prepared!\n",monster.getName());
+        System.out.printf("Your stats, Health:%s, Damage:%s\n",health,damage);
+        System.out.println("Do you desire to leave? or Fight to the death?");
+        String answer = input.nextLine();
+        while(!((answer.equals("fight")) || (answer.equals("leave")))){
+            System.out.println("Invalid, please enter 'fight' or 'leave'.");
+            answer = input.nextLine();
+        }
+        if(answer.equals("leave")){
+            return true;
+        }
+        if(answer.equals("fight")){
+            if(damage > monster.getAttack()){
+                System.out.printf("%s, has been defeated.\n",monster.getName());
+                System.out.println("+1 strength");
+                damage = damage +1;
+                amountOfMonstersKilled = amountOfMonstersKilled +1;
+            }else {
+                System.out.printf("%s, has defeated you.\n",monster.getName());
+                System.out.println("ouch");
+                health = health -1;
+            }
+        }
+        return false;
     }
 
     public int getHealth() {
@@ -64,8 +74,10 @@ public class player{
         return ("P");
     }
 
-
+    public int getAmountOfMonstersKilled() {
+        return amountOfMonstersKilled;
     }
+}
 
 
 

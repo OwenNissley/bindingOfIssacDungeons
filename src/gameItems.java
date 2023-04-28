@@ -14,7 +14,7 @@ public class gameItems {
         item cricketsHead = new item("Crickets Head","DMG UP!",0,3,"C");
         gameItems.add(cricketsHead);
         this.addToSet(cricketsHead);
-        item poop = new item("POO","EWWWW",-1,-1,"B");
+        item poop = new item("POO","EWWWW",-1,-1,"N");
         gameItems.add(poop);
         this.addToSet(poop);
         item doubleShot = new item("Double Shot","Seeing Two!",0,0,"D");
