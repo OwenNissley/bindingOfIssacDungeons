@@ -31,7 +31,7 @@ public class player{
         }else {
             damage = damage + item.getStrength();
         }
-        System.out.printf("%s,%s,\n%s",item.getSymbol(),item.getName(),item.getEffect());
+        System.out.printf("%s,%s,\n%s\n",item.getSymbol(),item.getName(),item.getEffect());
     }
 
     public boolean monsterInteraction(monster monster){

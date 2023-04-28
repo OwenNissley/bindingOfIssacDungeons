@@ -5,7 +5,7 @@ public class easyRoom extends room {
     private ArrayList<tile> easyTiles;
 
     easyRoom() {
-        super(3, 1, 2);
+        super(5, 2, 3);
         /*easyTiles = new ArrayList<>();
         gameItems items = new gameItems();
         gameMonsters monsters = new gameMonsters();

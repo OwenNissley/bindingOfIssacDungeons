@@ -58,7 +58,7 @@ public abstract class tile {
     }
 
     public boolean isTileEqualToDoor(){
-        if(Symbol.equals("|")){
+        if(Symbol.equals("]")){
             return true;
         }else {
             return false;
