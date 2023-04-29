@@ -1,5 +1,4 @@
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public abstract class room {
     private tile [][]  tiles;
@@ -21,8 +20,7 @@ public abstract class room {
                 tiles[i][j] = new emptyTile();
             }
         }
-        generateRoomItems(itemCount,size);
-        generateRoomMonsters(monsterCount,size);
+        generateRoomItemsAndMonsters(itemCount,monsterCount,size);
         playerTile = new playerTile("P");
         tiles[playerTile.getPosR()][playerTile.getPosC()] = playerTile;
         tiles[tiles.length-1][tiles[0].length-1] = new doorTile();
@@ -205,35 +203,29 @@ public abstract class room {
         tiles[playerTile.getPosR()][playerTile.getPosC()] = new emptyTile();
     }
 
-    public void generateRoomItems(int itemCount, int size){
-        for(int i=0; i<itemCount; i++){
-            Random r = new Random();
-            gameItems items = new gameItems();
+    public void generateRoomItemsAndMonsters(int itemCount, int monsterCount, int size) {
+        Random rand = new Random();
+        gameItems gameItems = new gameItems();
+        gameMonsters gameMonsters = new gameMonsters();
+        int row = rand.nextInt(size);
+        int col = rand.nextInt(size);
+        for(int i=0; i<(monsterCount); i++){
+                while (!(tiles[row][col].isTileEqualEmpty())) {
+                    row = rand.nextInt(size);
+                    col = rand.nextInt(size);
+                }
+                tiles[row][col] = new enemyTile(gameMonsters.getMonster());
+            }
+        for(int j=0; j<(itemCount); j++){
+            while (!(tiles[row][col].isTileEqualEmpty())) {
+                row = rand.nextInt(size);
+                col = rand.nextInt(size);
+            }
+            tiles[row][col] = new itemTile(gameItems.getItem());
+        }
+    }
 
-            int row = r.nextInt(size);
-            int col = r.nextInt(size);
-            itemTile itemTileToAdd = new itemTile(items.getItem());
-            while(!(tiles[row][col].isTileEqualEmpty())){
-                row = r.nextInt(size);
-                col = r.nextInt(size);
-            }
-            tiles[row][col] =itemTileToAdd;
-        }
-    }
-    public void generateRoomMonsters(int monsterCount, int size){
-        for(int i=0; i<monsterCount; i++){
-            Random r = new Random();
-            gameMonsters monsters = new gameMonsters();
-            int row = r.nextInt(size);
-            int col = r.nextInt(size);
-            enemyTile enemnyTileToAdd = new enemyTile(monsters.getMonster());
-            while(!(tiles[row][col].isTileEqualEmpty())){
-                row = r.nextInt(size);
-                col = r.nextInt(size);
-            }
-            tiles[row][col] =enemnyTileToAdd;
-        }
-    }
+
 
     public boolean isNeedToMoveRoom() {
         return needToMoveRoom;
