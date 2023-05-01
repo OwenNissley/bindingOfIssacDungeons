@@ -12,7 +12,7 @@ public class gameLoop {
         room currentRoom = null;
         boolean completion = true;
         boolean firstBreak = false; // what is firstbreak?
-        for (int i = 0; i < size; i++) { // start looping through the list of rooms
+        for (int i = 0; i < size; i++) { // start looping through the list of rooms.
             currentRoom = gameMap.getNextRoom();
             while (!(currentRoom.isNeedToMoveRoom())) { // while staying in this room
                 currentRoom.printRoom(); // print the room with the player

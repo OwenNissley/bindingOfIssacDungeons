@@ -5,7 +5,7 @@ public abstract class room {
     private playerTile playerTile;
     private boolean needToMoveRoom;
 
-    private boolean gameOver; // maybe store this variable with the player instead?
+    private boolean gameOver; // maybe store this variable with the player instead??
 
 
 
