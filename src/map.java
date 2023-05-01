@@ -8,38 +8,20 @@ public class map {
     /**
      * Will generate list of rooms via newRoom and fill Queue
      */
-    map(String difficulty, int size){
+    map(String difficulty, int size) {
         rooms = new LinkedList<>();
-        if(difficulty.equals("easy")){
-            for(int i=0; i<size; i++){
-                rooms.add(makeEasyRoom());
+        if (difficulty.equals("easy")) {
+            for (int i = 0; i < size; i++) {
+                rooms.add(new easyRoom());
             }
-        }//else if(difficulty.equals("medium")){
-
-       // }else {
-
-       // }
+        } else if (difficulty.equals("medium")) {
+            for (int i = 0; i < size; i++) {
+                //rooms.add( new mediumRoom()); - etc. for hard rooms
+            }
+        }
     }
-
-    /**
-     * Supply next room for list
-     * @return
-     */
-   public room makeEasyRoom(){
-       return new easyRoom();
-   }
-    public room makeMediumRoom(){
-       return null;
-
-    }
-    public room makeHardRoom(){
-       return null;
-
-    }
-
     public room getNextRoom(){
        return rooms.remove();
     }
-
 
 }

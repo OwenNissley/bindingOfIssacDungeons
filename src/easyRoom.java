@@ -5,7 +5,7 @@ public class easyRoom extends room {
     private ArrayList<tile> easyTiles;
 
     easyRoom() {
-        //MUST HAVE MORE MONSTERS THEN ITEMS FOR RANDOMNIZER TO WORK
+        //MUST HAVE MORE MONSTERS THAN ITEMS FOR RANDOMIZER TO WORK
         super(3, 3, 2);
     }
 }

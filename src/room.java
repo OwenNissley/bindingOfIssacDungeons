@@ -5,7 +5,7 @@ public abstract class room {
     private playerTile playerTile;
     private boolean needToMoveRoom;
 
-    private boolean gameOver;
+    private boolean gameOver; // maybe store this variable with the player instead?
 
 
 
@@ -20,37 +20,36 @@ public abstract class room {
                 tiles[i][j] = new emptyTile();
             }
         }
-        generateRoomItemsAndMonsters(itemCount,monsterCount,size);
+        populateRoom(itemCount,monsterCount,size);
         playerTile = new playerTile("P");
         tiles[playerTile.getPosR()][playerTile.getPosC()] = playerTile;
-        tiles[tiles.length-1][tiles[0].length-1] = new doorTile();
+        // tiles[tiles.length-1][tiles[0].length-1] = new doorTile(); I'm replacing this with a door in the wall
     }
 
-      public String getBoarder(int size){
-        String boarder = "";
-        for(int i=0; i<size; i++){
-            boarder = boarder + "-";
+      public String getBorder(int size){ // generates the top border of a room
+        String border = "";
+        for(int i=0; i<size; i++) {
+            border = border + "-";
           }
-        return boarder;
+        return border;
       }
     public void printRoom(){
-        tile door = new doorTile();
+        //tile door = new doorTile();
+        System.out.print("?: item or monster, - or |: wall, ]: door, P: player");
+        System.out.println(getBorder(tiles.length+2)); // print the top of the room
         for(int i=0; i<tiles.length; i++){
-            if(i == 0){
-                System.out.println(getBoarder(tiles.length+2));
-            }
-            System.out.print("|");
+            System.out.print("|"); // print one wall
             for(int j=0; j<tiles[0].length; j++){
-                System.out.print(tiles[i][j].getDisplaySymbol());
+                System.out.print(tiles[i][j].getDisplaySymbol()); // print the row's tiles
             }
-            System.out.print("|");
-                if(!(i == tiles.length-1)){
-                System.out.println();
-            }else {
-                    System.out.println();
-                    System.out.println(getBoarder(tiles.length+2));
-                }
+            if(i==2) {
+                System.out.print("]"); // print the door out
+            } else {
+                System.out.print("|"); // print the other wall
+            }
+            System.out.println();
         }
+        System.out.println(getBorder(tiles.length+2)); // print the bottom of the room
     }
 
     /**
@@ -64,11 +63,11 @@ public abstract class room {
         boolean leftMonsterFight = false;
         if(input.equals("w")){
             if(playerTile.getPosR() == 0){
-                throw new Exception("Cant move");
+                throw new Exception("Can't move");
             }else {
                 clearPLayerFromCurrentPosition();
                 tile checkTile = tiles[playerTile.getPosR()-1][playerTile.getPosC()];
-                leftMonsterFight = runMoveInteractionsWithDecsionReturn(checkTile);
+                leftMonsterFight = runActions(checkTile);
                 if(!(leftMonsterFight)){
                     playerTile.updatePosR(playerTile.getPosR()-1);
                 }else {
@@ -79,11 +78,11 @@ public abstract class room {
             }
         } else if (input.equals("s")) {
             if(playerTile.getPosR() == tiles.length-1){
-                throw new Exception("Cant move");
+                throw new Exception("Can't move");
             }else {
                 clearPLayerFromCurrentPosition();
                 tile checkTile = tiles[playerTile.getPosR()+1][playerTile.getPosC()];
-                leftMonsterFight = runMoveInteractionsWithDecsionReturn(checkTile);
+                leftMonsterFight = runActions(checkTile);
                 if(!(leftMonsterFight)){
                     playerTile.updatePosR(playerTile.getPosR()+1);
                 }else {
@@ -94,11 +93,11 @@ public abstract class room {
             }
         }else if (input.equals("a")) {
             if(playerTile.getPosC() == 0){
-                throw new Exception("Cant move");
+                throw new Exception("Can't move");
             }else {
                 clearPLayerFromCurrentPosition();
                 tile checkTile = tiles[playerTile.getPosR()][playerTile.getPosC()-1];
-                leftMonsterFight = runMoveInteractionsWithDecsionReturn(checkTile);
+                leftMonsterFight = runActions(checkTile);
                 if(!(leftMonsterFight)) {
                     playerTile.updatePosC(playerTile.getPosC() - 1);
                 }else {
@@ -109,11 +108,15 @@ public abstract class room {
             }
         }else if (input.equals("d")) {
             if(playerTile.getPosC() == tiles[0].length-1){
-                throw new Exception("Cant move");
+                if (playerTile.getPosR() == tiles.length-1) {
+                    needToMoveRoom = true;
+                } else {
+                    throw new Exception("Can't move");
+                }
             }else {
                 clearPLayerFromCurrentPosition();
                 tile checkTile = tiles[playerTile.getPosR()][playerTile.getPosC()+1];
-                leftMonsterFight = runMoveInteractionsWithDecsionReturn(checkTile);
+                leftMonsterFight = runActions(checkTile);
                 if(!(leftMonsterFight)) {
                     playerTile.updatePosC(playerTile.getPosC() + 1);
                 }else {
@@ -126,7 +129,7 @@ public abstract class room {
                 updatePLayer();
     }
 
-    public boolean runMoveInteractionsWithDecsionReturn(tile checkTile){
+    public boolean runActions(tile checkTile){
         boolean leftRoom = false;
         if(this.isThereAInteraction(checkTile)){
             if (isDoor(checkTile)){
@@ -203,7 +206,7 @@ public abstract class room {
         tiles[playerTile.getPosR()][playerTile.getPosC()] = new emptyTile();
     }
 
-    public void generateRoomItemsAndMonsters(int itemCount, int monsterCount, int size) {
+    public void populateRoom(int itemCount, int monsterCount, int size) {
         Random rand = new Random();
         gameItems gameItems = new gameItems();
         gameMonsters gameMonsters = new gameMonsters();
