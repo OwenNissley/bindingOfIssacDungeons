@@ -7,11 +7,14 @@ public class gameLoop {
         String userName = input.nextLine();
         System.out.println("Enter size of game, (How many rooms you want to play through)?");
         int size = getValidInt();
-        map gameMap = new map("easy", size);
+        System.out.println("Enter difficulty of game you like, (easy,medium,hard,mixed, or (constact creator for secert mode)?");
+        String diffuctlky = getValidDifficlty();
+        map gameMap = new map(diffuctlky, size);
         // initialize variables
         room currentRoom = null;
         boolean completion = true;
         boolean firstBreak = false; // what is firstbreak?
+        System.out.println("?: item or monster, - or |: wall, ]: door, P: player");
         for (int i = 0; i < size; i++) { // start looping through the list of rooms.
             currentRoom = gameMap.getNextRoom();
             while (!(currentRoom.isNeedToMoveRoom())) { // while staying in this room
@@ -50,7 +53,7 @@ public class gameLoop {
         double score = 0;
         int pHealth = Room.getPlayerHealth();
         int monsterCount = Room.getAmountOfMonstersPlayerKilled();
-        score = score + (((pHealth + monsterCount)*100)/size);
+        score = score + (((pHealth + monsterCount)*100));
         return score;
         }
 
@@ -63,6 +66,16 @@ public class gameLoop {
         int location = console.nextInt();
         return location;
 
+    }
+
+    public static String getValidDifficlty(){ // rename to "inp" instead of "int"?
+        Scanner console = new Scanner(System.in);
+        String nextLine = console.nextLine();
+        while (!( (nextLine.equals("easy")) || (nextLine.equals("medium")) || (nextLine.equals("hard")) || (nextLine.equals("mixed")) || (nextLine.equals("17543")) )){
+            System.out.println("Not a valid input, try again.");
+             nextLine = console.nextLine();
+        }
+        return nextLine;
     }
 
 }

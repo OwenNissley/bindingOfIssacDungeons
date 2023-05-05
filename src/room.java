@@ -20,9 +20,11 @@ public abstract class room {
                 tiles[i][j] = new emptyTile();
             }
         }
-        populateRoom(itemCount,monsterCount,size);
         playerTile = new playerTile("P");
         tiles[playerTile.getPosR()][playerTile.getPosC()] = playerTile;
+        populateRoom(itemCount,monsterCount,size);
+
+        //Fixed item promblem by putting items after player, player would just overwrite item, i forgot
         // tiles[tiles.length-1][tiles[0].length-1] = new doorTile(); I'm replacing this with a door in the wall
     }
 
@@ -33,16 +35,16 @@ public abstract class room {
           }
         return border;
       }
+
     public void printRoom(){
         //tile door = new doorTile();
-        System.out.print("?: item or monster, - or |: wall, ]: door, P: player");
         System.out.println(getBorder(tiles.length+2)); // print the top of the room
         for(int i=0; i<tiles.length; i++){
             System.out.print("|"); // print one wall
             for(int j=0; j<tiles[0].length; j++){
                 System.out.print(tiles[i][j].getDisplaySymbol()); // print the row's tiles
             }
-            if(i==2) {
+            if(i==tiles.length-1) {
                 System.out.print("]"); // print the door out
             } else {
                 System.out.print("|"); // print the other wall
@@ -207,13 +209,14 @@ public abstract class room {
     }
 
     public void populateRoom(int itemCount, int monsterCount, int size) {
+        // This works, i fixed problem, in constructor forgot to do after put player, so player overtook an item,
         Random rand = new Random();
         gameItems gameItems = new gameItems();
         gameMonsters gameMonsters = new gameMonsters();
         int row = rand.nextInt(size);
         int col = rand.nextInt(size);
         for(int i=0; i<(monsterCount); i++){
-                while (!(tiles[row][col].isTileEqualEmpty())) {
+                while ((!(tiles[row][col].isTileEqualEmpty()))) {
                     row = rand.nextInt(size);
                     col = rand.nextInt(size);
                 }
