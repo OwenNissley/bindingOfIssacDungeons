@@ -8,6 +8,8 @@ public class map {
 
     /**
      * Will generate list of rooms via newRoom and fill Queue
+     * @param difficulty the difficulty of the game
+     * @param size the number of rooms in the game
      */
     map(String difficulty, int size) {
         rooms = new LinkedList<>();
@@ -33,10 +35,19 @@ public class map {
             }
         }
     }
+
+    /**
+     *
+     * @return returns the next room in the queue
+     */
     public room getNextRoom(){
        return rooms.remove();
     }
 
+    /**
+     * generates a random room
+     * @return returns a randomly generated difficulty room
+     */
     public room getRandomRoom(){
         Random r = new Random();
         int rand = r.nextInt(100);

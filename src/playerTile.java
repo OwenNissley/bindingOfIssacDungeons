@@ -7,14 +7,14 @@ public class playerTile extends tile{
 
     private int posC;
     /**
-     * @param symbol Supplies symbol
+     * @param symbol Stores symbol to be used in the game.
      */
     playerTile(String symbol) {
         super(symbol);
         player = new player();
         posC =0;
         posR =0;
-        this.setSymbol("P");
+        this.setSymbol(symbol);
     }
 
 
