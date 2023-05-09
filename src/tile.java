@@ -74,11 +74,6 @@ public abstract class tile {
     }
 
 
-    public String getSymbol(){
-         return Symbol;
-    }
-
-
     public void setSymbol(String Symbol) {
         this.Symbol = Symbol;
     }

@@ -66,14 +66,6 @@ public class player{
         return health;
     }
 
-    public int getDamage() {
-        return damage;
-    }
-
-    public String toPrint(){
-        return ("P");
-    }
-
     public int getAmountOfMonstersKilled() {
         return amountOfMonstersKilled;
     }

@@ -8,12 +8,9 @@ public abstract class room {
     private boolean gameOver; // maybe store this variable with the player instead??
 
 
-    /**
-     * creates a room and populates it with an array of tiles.
-     * @param size long the square room is, in tiles
-     * @param monsterCount how many monsters to put in the room
-     * @param itemCount how many items to put in the room
-     */
+
+
+
     room(int size, int monsterCount, int itemCount){
         needToMoveRoom = false;
         gameOver = false;
@@ -23,58 +20,46 @@ public abstract class room {
                 tiles[i][j] = new emptyTile();
             }
         }
-        playerTile = new playerTile("ጰ"); //possible characters: ጰ♀⛄⚇⚴
+        playerTile = new playerTile("ጰ");
         tiles[playerTile.getPosR()][playerTile.getPosC()] = playerTile;
         populateRoom(itemCount,monsterCount,size);
 
+        //Fixed item promblem by putting items after player, player would just overwrite item, i forgot
+        // tiles[tiles.length-1][tiles[0].length-1] = new doorTile(); I'm replacing this with a door in the wall
     }
 
-    /**
-     * generates the top border of a room for printing
-     * @param size the size of the room
-     * @return returns a string of the top of the room
-     */
-      public String getTopBorder(int size){ // generates the top border of a room
-        String border = "╔";
+      public String getBorder(int size){ // generates the top border of a room
+        String border = "";
         for(int i=0; i<size; i++) {
-            border = border + "═";
+            border = border + "-";
           }
-        border = border + "╗";
         return border;
       }
 
-    public String getBottomBorder(int size){ // generates the top border of a room
-        String border = "╚";
-        for(int i=0; i<size; i++) {
-            border = border + "═";
-        }
-        border = border + "╝";
-        return border;
-    }
-
     public void printRoom(){
         //tile door = new doorTile();
-        System.out.println(getTopBorder(tiles.length)); // print the top of the room
+        System.out.println(getBorder(tiles.length+2)); // print the top of the room
         for(int i=0; i<tiles.length; i++){
-            System.out.print("║"); // print one wall
+            System.out.print("|"); // print one wall
             for(int j=0; j<tiles[0].length; j++){
                 System.out.print(tiles[i][j].getDisplaySymbol()); // print the row's tiles
             }
             if(i==tiles.length-1) {
-                System.out.print("⛫"); // print the door out∏∩⛫
+                System.out.print("]"); // print the door out
             } else {
-                System.out.print("║"); // print the other wall
+                System.out.print("|"); // print the other wall
             }
             System.out.println();
         }
-        System.out.println(getBottomBorder(tiles.length)); // print the bottom of the room
+        System.out.println(getBorder(tiles.length+2)); // print the bottom of the room
     }
 
+    /**
+     * Make tile empty
+     */
 
     /**
-     * handles player movement within the room, updating it accordingly
-     * @param input 'w' 'a' 's' or 'd'
-     * @throws Exception for if you hit a wall
+     * Takes postion of player and updates accordingly
      */
     public void movePlayer(String input) throws Exception {
         boolean leftMonsterFight = false;
@@ -146,11 +131,6 @@ public abstract class room {
                 updatePLayer();
     }
 
-    /**
-     * Does the appropriate actions for when a player steps onto a special tile.
-     * @param checkTile the tile stepped on
-     * @return returns whether the room has been left, true or false
-     */
     public boolean runActions(tile checkTile){
         boolean leftRoom = false;
         if(this.isThereAInteraction(checkTile)){
@@ -171,12 +151,6 @@ public abstract class room {
         }
         return leftRoom;
     }
-
-    /** TODO: (possibly) merge this method into the above method?
-     * detects whether a tile needs to run an action
-     * @param Tile
-     * @return true if stepping on the tile needs to run an action
-     */
    public boolean isThereAInteraction(tile Tile){
         if((Tile.isTileEqualToMonster()) || (Tile.isTileEqualToItem()) || (Tile.isTileEqualToDoor())){
             return true;
@@ -184,12 +158,6 @@ public abstract class room {
             return false;
         }
     }
-
-    /** TODO: just use the conditional statement instead?
-     * is the tile an item tile?
-     * @param Tile
-     * @return true this tile is an item tile
-     */
     public boolean isItem(tile Tile){
         if(Tile.isTileEqualToItem()){
             return true;
@@ -197,11 +165,6 @@ public abstract class room {
             return false;
         }
     }
-    /** TODO: just use the conditional statement instead?
-     * is the tile an item tile?
-     * @param Tile
-     * @return true this tile is a monster tile
-     */
     public boolean isMonster(tile Tile){
         if(Tile.isTileEqualToMonster()){
             return true;
@@ -209,11 +172,6 @@ public abstract class room {
             return false;
         }
     }
-    /** TODO: just use the conditional statement instead?
-     * is the tile an item tile?
-     * @param Tile
-     * @return true this tile is a door tile
-     */
     public boolean isDoor(tile Tile){
         if(Tile.isTileEqualToDoor()){
             return true;

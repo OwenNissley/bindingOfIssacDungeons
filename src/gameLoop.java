@@ -39,7 +39,7 @@ public class gameLoop {
         }
         if(completion){
             //print the username, score, win message, and sarcastic comment
-            System.out.println("You, "+ userName +", have won with a score of: " + scoreCalculator(currentRoom,size) + " That's garb, get higher");
+            System.out.println("You,("+ userName +"), have won with a score of: " + scoreCalculator(currentRoom,size) + " That's garb, get higher");
         }else {
             //print sarcastic lose message
             System.out.println("Wow You're garb, you died!! MWAHAHAHAHAH\n" +
